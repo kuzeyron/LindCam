@@ -1,0 +1,5 @@
+Cython
+Kivy
+pillow
+httpx
+trio

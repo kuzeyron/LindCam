@@ -1,0 +1,5 @@
+fastapi
+hypercorn[trio]
+starlette
+opencv-contrib-python
+trio

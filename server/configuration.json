@@ -1,0 +1,14 @@
+{
+    "SERVER": {
+        "host": ["0.0.0.0", 6666],
+        "http": "8080",
+        "prompt_user": "SERVER"
+    },
+    "CAMERA": {
+        "captureport": 0,
+        "fps": 60,
+        "resolution": [1280, 720],
+        "target": "camera",
+        "videosource": "test.mp4"
+    }
+}

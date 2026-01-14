@@ -1,0 +1,13 @@
+{
+    "WEATHER": {
+        "key": "YOUR API KEY GOES HERE",
+        "coordinates": ["60.020037", "22.500597"]
+    },
+    "SERVER": {
+        "remote": ["192.168.x.123", 6666],
+        "http": 8080
+    },
+    "SETTINGS": {
+        "window_size": [1200, 600]
+    }
+}
