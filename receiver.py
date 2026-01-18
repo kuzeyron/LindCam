@@ -12,7 +12,6 @@ from httpx import AsyncClient
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
-from kivy.lang.builder import Builder
 from kivy.properties import (BooleanProperty, ColorProperty, ListProperty,
                              NumericProperty, StringProperty)
 from kivy.uix.anchorlayout import AnchorLayout
@@ -23,170 +22,6 @@ with open('configuration.json', encoding='utf-8') as f:
     CONFIG = json.load(f)
 
 Window.size = CONFIG['SETTINGS']['window_size']
-Builder.load_string("""
-#:import Stream libs.corestreamer.Stream
-
-<Label>:
-    font_name: 'fonts/JosefinSans-Bold.ttf'
-
-<BoardText@Label>:
-    font_size: dp(60)
-    outline_color: 0, 0, 0, .1
-    outline_width: dp(2)
-    size: self.texture_size
-    size_hint: None, None
-
-<Weather>:
-    color: 1, 1, 1, .5
-    font_size: dp(30)
-    pos_hint: {'center_x': .5, 'center_y': .5}
-    size: dp(90), dp(90)
-    size_hint: None, None
-    canvas.before:
-        Color:
-            rgba: root.heat
-        RoundedRectangle:
-            pos: self.pos
-            radius: (dp(50), )
-            size: self.size
-        Color:
-            rgba: 1, 1, 1, .5
-        RoundedRectangle:
-            pos: self.x + dp(20), self.y + dp(20)
-            radius: (dp(50), )
-            size: self.width - dp(40), self.height - dp(40)
-
-    FloatLayout:
-        Label:
-            color: 0, 0, 0, 1
-            font_size: dp(17)
-            markup: True
-            padding: dp(4), dp(4)
-            pos_hint: {'top': 1.2, 'right': 1.2}
-            size: self.texture_size
-            size_hint: None, None
-            text: f'[b]{root.deg}[/b]\u00b0'
-            canvas.before:
-                Color:
-                    rgba: 1, 1, 1, .9
-                RoundedRectangle:
-                    pos: self.pos
-                    radius: (dp(15), )
-                    size: self.size
-
-<Lunar>:
-    pos_hint: {'center_x': .5, 'center_y': .5}
-    size: dp(90), dp(90)
-    size_hint: None, None
-    canvas.before:
-        Color:
-            rgba: .3, 1, .3, .5
-        RoundedRectangle:
-            size: self.size
-            pos: self.pos
-            radius: (dp(50), )
-    Image:
-        size: dp(60), dp(60)
-        size_hint: None, None
-        source: root.path
-        canvas.before:
-            Color:
-                rgba: 0, 0, 0, .4
-            RoundedRectangle:
-                pos: self.pos
-                radius: (dp(50), )
-                size: self.size
-
-<Picture>:
-    Stream:
-        id: streamer
-        host: app.host
-
-    Label:
-        color: 1, 1, 1, .9
-        font_size: dp(65)
-        opacity: 0 if streamer.streamable else 1
-        outline_color: 0, 0, 0, .1
-        outline_width: dp(5)
-        text: 'Väntar på flödet från kameran..'
-
-    BoxLayout:
-        padding: dp(15)
-        pos_hint: {'right': 1}
-        size: dp(555), dp(220)
-        size_hint: None, None
-        spacing: dp(3)
-        canvas.before:
-            Color:
-                rgba: .129, .129, .129, .5
-            RoundedRectangle:
-                size: self.size
-                pos: self.pos
-                radius: dp(30), 0, 0, 0
-            Color:
-                rgba: 1, 1, 1, .2
-            SmoothLine:
-                rounded_rectangle: (self.x - dp(2.5), self.y - dp(2), self.width + dp(5), \
-                self.height + dp(2), dp(30), 0, 0, 0)
-                width: dp(1)
-
-        BoxLayout:
-            id: station
-            orientation: 'vertical'
-            size_hint_x: None
-            spacing: dp(15)
-            width: dp(155)
-
-            Weather:
-                id: weather
-
-                AsyncImage:
-                    id: weather_icon
-                    size: dp(85), dp(85)
-                    size_hint: None, None
-                    source: self.parent.path
-                    canvas.before:
-                        Color:
-                            rgba: 0, 0, 0, .4
-                        RoundedRectangle:
-                            pos: self.pos
-                            radius: (dp(60), )
-                            size: self.size
-
-            AsyncImage:
-                id: lunar_icon
-                pos_hint: {'center_x': .5}
-                size: dp(65), dp(65)
-                size_hint: None, None
-                canvas.before:
-                    Color:
-                        rgba: 0, .4, 0, 1
-                    RoundedRectangle:
-                        pos: self.pos
-                        radius: (dp(60), )
-                        size: self.size
-
-        BoxLayout:
-            orientation: 'vertical'
-            spacing: dp(2)
-
-            BoardText:
-                color: 1, 1, 1, .9
-                text: 'LindCamV3'
-
-            BoardText:
-                color: 1, 1, 1, .7
-                font_size: dp(50)
-                id: date
-                text: '00.00.0000'
-
-            BoardText:
-                color: 1, 1, 1, .5
-                font_size: dp(45)
-                id: time
-                text: '00:00:00'
-
-""")
 
 
 class Weather(AnchorLayout):
@@ -199,7 +34,7 @@ class Picture(FloatLayout):
     pass
 
 
-class CamApp(App):
+class ReceiverApp(App):
     host = ListProperty(CONFIG['SERVER']['remote'])
     icon = StringProperty(join('icons', 'snap.png'))
     monitor_is_off = BooleanProperty(None)
@@ -280,4 +115,4 @@ class CamApp(App):
 
 
 if __name__ == "__main__":
-    trio.run(CamApp().async_run)
+    trio.run(ReceiverApp().async_run)

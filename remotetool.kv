@@ -1,0 +1,126 @@
+<SLabel@Label>:
+    font_name: 'fonts/JosefinSans-Bold.ttf'
+    font_size: dp(24)
+    size_hint_y: .1
+
+<SharedImageButton>:
+    size: dp(80), dp(80)
+    size_hint: None, None
+    source: 'icons/share.png'
+    canvas.before:
+        Color:
+            rgba: .6, .2, .2, 1
+        RoundedRectangle:
+            pos: self.pos
+            radius: (dp(20), )
+            size: self.size
+
+<SharedVideoButton>:
+    size: dp(80), dp(80)
+    size_hint: None, None
+    source: 'icons/play.png'
+    canvas.before:
+        Color:
+            rgba: .2, .2, .6, 1
+        RoundedRectangle:
+            pos: self.pos
+            radius: (dp(20), )
+            size: self.size
+
+<Controller>:
+    canvas.before:
+        Color:
+            rgba: .1, .1, 1, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+
+<Base>:
+    orientation: 'vertical'
+    padding: 0, app.statbar_height, 0, app.navbar_height + dp(5)
+    canvas.before:
+        Color:
+            rgba: 2., .1, 1, .1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        Carousel:
+            size: self.parent.size
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                SBoxLayout:
+                    orientation: 'vertical'
+                    padding: dp(10), dp(20)
+                    spacing: dp(10)
+                    canvas.before:
+                        Color:
+                            rgba: .1, .1, 1, .1
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
+                    SLabel:
+                        text: 'Snapshot'
+                        pos_hint: {'top': 1}
+
+                    GetFrame:
+                        fit_mode: 'contain'
+                        id: frame
+                        on_release: info.dispatch('on_release')
+                        source: 'icons/snap.png'
+                        url: root.url
+
+                    SharedImageButton:
+                        disabled: info.last_amount == 0 and not stream.streamable
+                        frame: frame.texture
+                        pos_hint: {'center_x': .5, 'center_y': .5}
+
+                BoxLayout:
+                    height: dp(50)
+                    padding: dp(5)
+                    size_hint_y: None
+                    spacing: dp(5)
+
+                    Controller:
+                        disabled: True if info.last_amount > 0 else False
+                        remote: info
+                        target: 'connect'
+                        text: 'Starta flödet'
+                        url: root.url
+
+                    Controller:
+                        disabled: True if info.last_amount < 1 else False
+                        remote: info
+                        target: 'disconnect'
+                        text: 'Stoppa flödet'
+                        url: root.url
+
+            SBoxLayout:
+                orientation: 'vertical'
+                padding: dp(10), dp(10)
+                spacing: dp(10)
+
+                SLabel:
+                    text: 'Stream'
+                    pos_hint: {'top': 1}
+
+                Streamer:
+                    host: app.host
+                    id: stream
+                    remote: info
+                    source: 'icons/play.png'
+
+                SharedVideoButton:
+                    disabled: not stream.streamable
+                    id: videoshare
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+
+        Information:
+            id: info
+            size_hint_y: .1
+            url: root.url
