@@ -2,7 +2,7 @@
 ```sh
 # Place these two in ~/.bashrc
 alias activate='source .venv/bin/activate'
-alias venv='python -m venv .venv'
+alias venv='python -m venv .venv --system-site-packages'
 
 # Refresh .bashrc only once:
 source ~/.bashrc
